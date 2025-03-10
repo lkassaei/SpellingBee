@@ -48,9 +48,6 @@ public class SpellingBee {
         ArrayList<String> substrings = new ArrayList<String>();
         // First and last must start at zero to be able to capture all substrings
         words = generateHelper(substrings, 0, 0, letters);
-        for (String s : words) {
-            System.out.println(s);
-        }
     }
 
     public ArrayList<String> generateHelper(ArrayList<String> arr, int first, int last, String word) {
@@ -72,42 +69,48 @@ public class SpellingBee {
     //  that will find the substrings recursively.
     public void sort() {
         // YOUR CODE HERE
-        ArrayList<String> sorted = new ArrayList<String>();
-        words = sortHelper(sorted, 0, words.size() -1);
-        for (String s: words) {
-            System.out.println(s);
-        }
+        words = sortHelper(words, 0, words.size() -1);
     }
 
     public ArrayList<String> sortHelper(ArrayList<String> arr, int low, int high) {
+        // Base Case: If have split everything down to only one letter
         if (high == low) {
+            // Take that letter and make a new arrayList of only that letter and return
             ArrayList<String> newArr = new ArrayList<String>();
             newArr.add(arr.get(low));
             return newArr;
         }
+        // Find the middle of the array
         int med = (high + low)/2;
+        // Split the list in two and sort those halves
         ArrayList<String> arr1 = sortHelper(arr, low, med);
         ArrayList<String> arr2 = sortHelper(arr, med+1, high);
+        // Merge the halves together
         return merge(arr1, arr2);
     }
 
     private ArrayList<String> merge(ArrayList<String> arr1, ArrayList<String> arr2) {
+        // Create a new array for the merged list to go into
         ArrayList<String> merged = new ArrayList<String>();
-        int i = 0, j =0;
-        while (i < arr1.size() && j < arr2.size()) {
-            if (arr1.get(i).compareTo(arr2.get(j)) < 0) {
-                merged.add(arr1.get(i++));
+        int left = 0, right =0;
+        // While there is still things to look at
+        while (left < arr1.size() && right < arr2.size()) {
+            // If the first index in the left array is less than the first index in the right array
+            if (arr1.get(left).compareTo(arr2.get(right)) < 0) {
+                // Add the index in the left array to the new sorted array
+                merged.add(arr1.get(left++));
             }
             else {
-                merged.add(arr2.get(j++));
+                // Add the index in the right array to the new sorted array
+                merged.add(arr2.get(right++));
             }
         }
-
-        while (i < arr1.size()) {
-            merged.add(arr1.get(i++));
+        // After exiting the first while loop, while whichever the bigger array is has more elements left, add those elements
+        while (left < arr1.size()) {
+            merged.add(arr1.get(left++));
         }
-        while (j < arr2.size()) {
-            merged.add(arr2.get(j++));
+        while (right < arr2.size()) {
+            merged.add(arr2.get(right++));
         }
         return merged;
     }
@@ -127,23 +130,33 @@ public class SpellingBee {
     // TODO: For each word in words, use binary search to see if it is in the dictionary.
     //  If it is not in the dictionary, remove it from words.
     public void checkWords() {
-        // YOUR CODE HERE
-        for (String w: words) {
-            checkWordsHelper(w, 0, DICTIONARY_SIZE -1);
+        // If the word is not found in the dictionary, remove it from the array
+        for (int i = 0; i < words.size(); i++) {
+            if (!checkWordsHelper(words.get(i), 0, DICTIONARY_SIZE -1)) {
+                words.remove(i);
+                // Make sure to reset i so we do not skip anything
+                i--;
+            }
         }
     }
 
     public boolean checkWordsHelper(String word, int first, int last) {
-        int mid = (first + last)/2 + first;
-        if (first == last) {
+        // Find the middle word in the dictionary
+        int mid = (first + last)/2;
+        // Base Case: If the word is not found return false
+        if (first > last) {
             return false;
         }
+        // Base Case: If the middle index equals the word then return true
         if (DICTIONARY[mid].equals(word)) {
             return true;
         }
-        if (1 ==1) {// If dictionary[mid] >= word
+        // If the word is alphabetically before the word in the dictionary
+        if (word.compareTo(DICTIONARY[mid]) < 0) {
+            // Check the lower half of the dictionary
             return checkWordsHelper(word, first, mid -1);
         }
+        // Else check the higher half of the dictionary
         return checkWordsHelper(word, mid + 1, last);
     }
 
