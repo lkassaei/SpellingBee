@@ -74,6 +74,9 @@ public class SpellingBee {
         // YOUR CODE HERE
         ArrayList<String> sorted = new ArrayList<String>();
         words = sortHelper(sorted, 0, words.size() -1);
+        for (String s: words) {
+            System.out.println(s);
+        }
     }
 
     public ArrayList<String> sortHelper(ArrayList<String> arr, int low, int high) {
