@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-
+// Spelling Bee by Lily Kassaei
 /**
  * Spelling Bee
  *
