@@ -44,10 +44,25 @@ public class SpellingBee {
     //  Store them all in the ArrayList words. Do this by calling ANOTHER method
     //  that will find the substrings recursively.
     public void generate() {
-        // YOUR CODE HERE — Call your recursive method!
+        // Generate all substrings for original word
         ArrayList<String> substrings = new ArrayList<String>();
-        // First and last must start at zero to be able to capture all substrings
+        // Note that first and last must start at zero to be able to capture all substrings
         words = generateHelper(substrings, 0, 0, letters);
+
+        // Generate all permutations of the word
+        ArrayList<String> permutations = new ArrayList<String>();
+        generatePermutations(permutations, "", letters);
+        // For every permutation, find all possible substrings in that permutation
+        for (String w: permutations) {
+            ArrayList<String> permutationSubstrings = new ArrayList<String>();
+            permutationSubstrings = generateHelper(permutationSubstrings, 0, 0, w);
+            // For every substring in every permutation, if words does not have it already, then add it
+            for (String s: permutationSubstrings) {
+                if (!words.contains(s)) {
+                    words.add(s);
+                }
+            }
+        }
     }
 
     public ArrayList<String> generateHelper(ArrayList<String> arr, int first, int last, String word) {
@@ -65,15 +80,30 @@ public class SpellingBee {
         return generateHelper(arr, first, last + 1, word);
     }
 
+    public void generatePermutations(ArrayList<String> permutations, String current, String word) {
+        // Base Case: If the word is empty, a permutation has been completed and we can stop recursion
+        if (word.length() == 0) {
+            // Add the permutation to the array
+            permutations.add(current);
+            return;
+        }
+        // Iterate through ever character in the word
+        for (int i = 0; i < word.length(); i++) {
+            // Remove the current character and pass the remaining string through the next recursive iteration
+            String newWord = word.substring(0, i) + word.substring(i + 1);
+            generatePermutations(permutations, current + word.charAt(i), newWord);
+        }
+    }
+
     // TODO: Apply mergesort to sort all words. Do this by calling ANOTHER method
     //  that will find the substrings recursively.
     public void sort() {
-        // YOUR CODE HERE
+        // Sort the words
         words = sortHelper(words, 0, words.size() -1);
     }
 
     public ArrayList<String> sortHelper(ArrayList<String> arr, int low, int high) {
-        // Base Case: If have split everything down to only one letter
+        // Base Case: If we have split everything down to only one letter
         if (high == low) {
             // Take that letter and make a new arrayList of only that letter and return
             ArrayList<String> newArr = new ArrayList<String>();
